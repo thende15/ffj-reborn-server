@@ -38,7 +38,7 @@ export async function GET() {
     } catch(error) {
         console.error("We encountered a problem; try again later.", error)
         return NextResponse.json(
-            {error: "A failre to retrieve data has failed."}, 
+            {error: "A failure to retrieve data has failed."}, 
             {status: 500}
         )
     }
