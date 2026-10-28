@@ -12,10 +12,16 @@ const nextConfig: NextConfig = {
       },
     },
   },
+  logging: {
+    fetches: {
+      fullUrl: true
+    },
+    browserToTerminal: true
+  },
   async headers() {
     return [
       {
-        source: "/api/:path",
+        source: "/api/:path*",
         headers: [
           {key: "Access-Control-Allow-Credentials", value: "true"},
           {key: "Access-Control-Allow-Origin", value: "*"},
