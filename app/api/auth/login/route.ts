@@ -10,20 +10,21 @@ export async function POST(request:NextRequest) {
             return NextResponse.json({error: 'Email and password are required.'}, {status: 400})
         }
 
-        const result = await pool.query('Select id and password hash from users where username=$1', [email])
+        const result = await pool.query('Select global_id, password from accounts where email=$1', [email])
 
         if(result.rowCount === 0) {
             return NextResponse.json({error: 'Credentials failed. Please try again.'}, {status: 401})
         }
         const user = result.rows[0]
-        const match = await bcrypt.compare(password, user.password_hash)
+        const match = await bcrypt.compare(password, user.password)
         if(!match) {
             return NextResponse.json({error: 'Credentials failed. Please try again.'}, {status: 401})
         }
         //There's an expire property that I may get rid of if it's optional. Or have it removed after 6 months; an hour is a short time
-        const token = jwt.sign({userId: user.id, email}, process.env.JWT_SECRET as string, {expiresIn: '1h'});
+        const profiles = await pool.query( `SELECT * FROM profiles WHERE profiles.account_id = ${user.global_id}`)
+        const token = jwt.sign({userId: user.global_id, email}, process.env.JWT_SECRET as string, {expiresIn: '1h'});
 
-        return NextResponse.json({token})
+        return NextResponse.json({token: token, profiles: profiles.rows[0]})
 
     } catch (error:any){
         console.error('Registration Error: ', error)
