@@ -7,6 +7,7 @@ export async function GET(
     {params}: {params: Promise<{board_id: string}>}
 ) {
     try {
+        //TODO: adjust query to get board by id, the subboards of that board, and the threads (there is a new property to do that)
         const prom = await params
         const board_id = parseInt(prom.board_id, 10)
         const query = await pool.query(
