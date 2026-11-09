@@ -24,7 +24,7 @@ export async function POST(request:NextRequest) {
         const profiles = await pool.query( `SELECT * FROM profiles WHERE profiles.account_id = ${user.global_id}`)
         const token = jwt.sign({userId: user.global_id, email}, process.env.JWT_SECRET as string, {expiresIn: '1h'});
 
-        return NextResponse.json({token: token, profiles: profiles.rows[0]})
+        return NextResponse.json({message:"Login Successful!", token: token, profiles: profiles.rows[0]}, {status: 200})
 
     } catch (error:any){
         console.error('Registration Error: ', error)
